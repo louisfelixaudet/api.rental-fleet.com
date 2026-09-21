@@ -1,0 +1,23 @@
+{
+  "name": "api.rental-fleet.com",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node --env-file=.env src/index.js",
+    "dev": "node --env-file=.env --watch src/index.js"
+  },
+  "imports": {
+    "#controllers/*": "./src/controllers/*",
+    "#middlewares/*": "./src/middlewares/*",
+    "#routes/*": "./src/routes/*",
+    "#utils/*": "./src/utils/*",
+    "#views/*": "./src/views/*",
+    "#configs": "./src/configs/index.js",
+    "#infrastructure": "./src/infrastructure/db.js",
+    "#models/*": "./src/models/*"
+  },
+  "dependencies": {
+    "mariadb": "^3.5.3"
+  }
+}
