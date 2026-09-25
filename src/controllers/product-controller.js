@@ -118,6 +118,43 @@ const ProductController = {
             throw err;
 
         }
+    },
+
+    delete: async (req, res) => {
+        try {
+
+            const id = res.locals.url.params.id;
+
+            const response = await ProductModel.deleteById(id);
+
+            if (response) {
+                res.removeHeader('Content-Type');
+                ResponseManager.send(req, res, 204, ProductView.single(response));
+                return true;
+            }
+
+            res.statusCode = 404;
+            res.end('Ressouce does not exists');
+            return false;
+
+        } catch (err) {
+
+            // Something whent wrong with the database query. 
+            // Check the error code to determine what happened.
+
+            if (err instanceof ErrorTypes.DatabaseError) {
+
+                res.statusCode = 503;
+                res.setHeader('Content-Type', 'text/plain');
+                res.end('Service Unavailable');
+                return false;
+
+            }
+
+            throw err;
+
+        }
+
     }
 
 

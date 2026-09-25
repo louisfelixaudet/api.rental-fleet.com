@@ -75,6 +75,23 @@ const ProductModel = {
             console.error('Error executing query:', err.stack);
             console.log(err);
         }
+    },
+
+    deleteById: async (id) => {
+        try{
+            
+            const params = {
+                id
+            };
+
+            const itemDeleted = await pool.query("DELETE FROM product WHERE id = :id", params);
+            return itemDeleted.affectedRows > 0; 
+
+        } catch(err) {
+
+            handleDBError(err);
+            console.error(err); // ligne temporaire pour déboguer
+        }  
     }
     
 };

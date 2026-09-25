@@ -19,7 +19,11 @@ export const productRoutes = [
         method: 'POST',
         handler: ProductController.create
     },
-
+    {
+        pattern: '/products/:id',
+        method: 'DELETE',
+        handler: ProductController.delete
+    }
 ];
 
 /*
