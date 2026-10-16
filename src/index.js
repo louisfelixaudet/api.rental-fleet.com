@@ -4,7 +4,9 @@ import http from 'node:http';
 import setDefaultHeaders from '#middlewares/set-default-headers.js';
 import parseUrl from '#middlewares/parse-url.js';
 import matchRoute from '#middlewares/match-route.js';
-import handleCORS from '#middlewares/handle-cors.js'
+import handleCORS from '#middlewares/handle-cors.js';
+import authorizeUser from '#middlewares/authorize-user.js';
+import valideApiKey from '#middlewares/validate-key.js';
 
 // Fonction qui créé la chaîne d'intergiciels
 import runMiddlewares from '#utils/run-middlewares.js';
@@ -26,10 +28,12 @@ server.on('request', async (req, res) => {
 
         if (! await runMiddlewares(req, res, 
             [
+                handleCORS,
                 setDefaultHeaders,
                 parseUrl,
                 matchRoute,
-                handleCORS
+                valideApiKey,
+                authorizeUser
             ]
         )) return;        
                

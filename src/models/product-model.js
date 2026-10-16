@@ -5,23 +5,23 @@ const ProductModel = {
     selectAll: async () => {
         console.log("TEST - début selectAll");
         try {
-            
+
             const query = `SELECT id, name, picture, price FROM product`;
 
             const rows = await pool.query(query);
-            
+
             return rows; // MariaDB retourne un tableau de résultats
 
-        } catch(err) {
+        } catch (err) {
             console.error(err); // ligne temporaire pour déboguer
             handleDBError(err);
-        }  
+        }
     },
 
     selectById: async (id) => {
-        
-        try{
-            
+
+        try {
+
             /* 
                 
                 En JS, si on construit un objet en ne passant que des variables, ça va créer des attributs
@@ -53,24 +53,24 @@ const ProductModel = {
             const [row] = await pool.query("SELECT id, name, picture, price FROM product WHERE id = :id", params);
             return row; // MariaDB retourne un tableau de résultats
 
-        } catch(err) {
+        } catch (err) {
 
             handleDBError(err);
             console.error(err); // ligne temporaire pour déboguer
-        }  
+        }
     },
 
     insertOne: async (name, picture, price) => {
         let query = "insert into product (name, picture, price) values (:name, :picture, :price)";
         let values = {
-            name: name, 
-            picture: picture, 
+            name: name,
+            picture: picture,
             price: price
         }
-        try{
+        try {
             const res = await pool.query(query, values);
             return Number(res.insertId);
-        } catch (err){
+        } catch (err) {
             handleDBError(err);
             console.error('Error executing query:', err.stack);
             console.log(err);
@@ -78,22 +78,68 @@ const ProductModel = {
     },
 
     deleteById: async (id) => {
-        try{
-            
+        try {
+
             const params = {
                 id
             };
 
             const itemDeleted = await pool.query("DELETE FROM product WHERE id = :id", params);
-            return itemDeleted.affectedRows > 0; 
+            return itemDeleted.affectedRows > 0;
 
-        } catch(err) {
+        } catch (err) {
 
             handleDBError(err);
             console.error(err); // ligne temporaire pour déboguer
-        }  
+        }
+    },
+
+    updateById: async (id, name, picture, price) => {
+
+        try {
+
+            const params = {
+                id,
+                name,
+                picture,
+                price
+            };
+
+            const result = await pool.query("update product set name = :name, picture = :picture, price = :price where id = :id", params);
+            return result.affectedRows > 0;
+
+        } catch (err) {
+
+            handleDBError(err);
+
+        }
+
+    },
+    modifyById: async (id, data) => {
+
+        const params = {
+            id,
+            ...data
+        };
+
+        try {
+
+            const fields = Object.entries(data)
+                .map(([key]) => `${key} = :${key}`)
+                .join(', ');
+
+            const query = "update product set " + fields + " where id = :id";
+
+            const result = await pool.query(query, params);
+            return result.affectedRows > 0;
+
+        } catch (err) {
+
+            handleDBError(err);
+
+        }
+
     }
-    
 };
 
 export default ProductModel;
